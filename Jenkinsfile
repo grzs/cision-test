@@ -2,9 +2,14 @@ pipeline {
     agent any
     stages {
 	stage('Lint') {
+	    agent {
+		docker {
+		    image 'hadolint/hadolint:latest-debian'
+		}
+	    }
 	    steps {
-		echo 'Invoking hadolint...'
-		sh 'docker run --rm -i hadolint/hadolint Dockerfile* | tee -a hadolint_lint.txt'
+		echo 'Invoking hadolint'
+		sh 'hadolint Dockerfile* | tee -a hadolint_lint.txt'
 	    }
 	    post {
 		always {
