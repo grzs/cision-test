@@ -22,12 +22,12 @@ pipeline {
 	stage('Build builder') {
 	    steps {
 		echo 'Building nginx builder...'
-		sh 'docker build -t ${env.REPO}:${TAG_BUILDER} -f Dockerfile.builder .'
+		sh 'docker build -t ${env.REPO}:${env.TAG_BUILDER} -f Dockerfile.builder .'
             }
 	}
 	stage('Push image - builder') {
 	    steps {
-		sh 'docker push ${env.REPO}:${TAG_BUILDER}'
+		sh 'docker push ${env.REPO}:${env.TAG_BUILDER}'
             }
 	}
         // stage('Test') {
