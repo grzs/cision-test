@@ -1,4 +1,4 @@
-FROM docker.io/library/archlinux:latest
+FROM docker.io/library/archlinux:base
 LABEL description="Arch Linux based simple image running nginx"
 
 # install nginx and print info
