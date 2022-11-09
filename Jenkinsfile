@@ -3,7 +3,7 @@ pipeline {
     environment {
 	REPO = 'grzs/nginx-cision'
 	TAG_BUILDER = 'builder'
-	TAG_RUNNER = 'runner-archlinux'
+	TAG_RUNNER = 'runner-alpine'
     }
     stages {
 	stage('Lint') {

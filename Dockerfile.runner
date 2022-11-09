@@ -1,10 +1,11 @@
-FROM docker.io/library/archlinux:base
-LABEL description="Arch Linux based simple image running nginx"
+FROM docker.io/library/alpine:3.16.2
+LABEL description="Alpine Linux (v3.16.2) based simple image running nginx"
 
 ENV DEFAULT_HTTP_PORT=8000
 ENV DEFAULT_HTTPS_PORT=4433
 
-# install nginx and print info
+RUN adduser -S http
+
 COPY nginx.tar.gz /
 RUN echo "Installing nginx" && \
     tar xvzf nginx.tar.gz && rm nginx.tar.gz && \
