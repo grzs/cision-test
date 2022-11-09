@@ -1,6 +1,9 @@
 FROM docker.io/library/archlinux:base
 LABEL description="Arch Linux based simple image running nginx"
 
+ENV DEFAULT_HTTP_PORT=8000
+ENV DEFAULT_HTTPS_PORT=4433
+
 # install nginx and print info
 COPY nginx.tar.gz /
 RUN echo "Installing nginx" && \
@@ -9,10 +12,11 @@ RUN echo "Installing nginx" && \
     install -dm700 /var/lib/nginx/proxy && \
     install -dm755 /var/log/nginx && \
     /usr/bin/nginx -v && /usr/bin/nginx -t && \
-    chown -R http /var/l*/nginx /run/nginx.pid
+    chown -R http /var/l*/nginx /run/nginx.pid && \
+    sed -E -i 's/(listen +)80;/\1'"${DEFAULT_HTTP_PORT};/" /etc/nginx/nginx.conf
 
-EXPOSE 80/tcp
-EXPOSE 443/tcp
+EXPOSE ${DEFAULT_HTTP_PORT}/tcp
+EXPOSE ${DEFAULT_HTTPS_PORT}/tcp
 
 USER http
 WORKDIR /etc/nginx
