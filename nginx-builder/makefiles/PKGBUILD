@@ -2,9 +2,9 @@
 # Date: 2022-11-8
 # Description: build specified nginx version
 
-pkgbase=nginx-custom
+pkgbase=nginx-cision
 _pkgbase=nginx
-pkgname=(nginx-custom)
+pkgname=(nginx-cision)
 pkgver=1.19.0
 pkgrel=1
 pkgdesc='Lightweight HTTP server and IMAP/POP3 proxy server'
@@ -64,8 +64,7 @@ _common_flags=(
 _stable_flags=(
 )
 
-prepare() {
-}
+# prepare() {}
 
 build() {
   cd $_pkgbase-$pkgver
@@ -93,7 +92,7 @@ build() {
   make
 }
 
-package_nginx-custom() {
+package_nginx-cision() {
   cd $_pkgbase-$pkgver
   make DESTDIR="$pkgdir" install
 
