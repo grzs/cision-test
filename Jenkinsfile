@@ -1,13 +1,21 @@
 pipeline {
     agent any
     stages {
-	stage('Linter') {
+	stage('Lint') {
+	    agent {
+		docker {
+		    image 'hadolint/hadolint:latest-debian'
+		}
+	    }
 	    steps {
-		echo 'Invoking hadolint - builder'
-		sh 'docker run --rm -i hadolint/hadolint < Dockerfile.builder'
-		echo 'Invoking hadolint - runner'
-		sh 'docker run --rm -i hadolint/hadolint < Dockerfile.runner'
-            }
+		echo 'Invoking hadolint...'
+		sh 'hadolint Dockerfile* | tee -a hadolint_lint.txt'
+	    }
+	    post {
+		always {
+		    archiveArtifacts 'hadolint_lint.txt'
+		}
+	    }
 	}
 	stage('Build') {
 	    steps {
