@@ -8,9 +8,8 @@ pipeline {
     stages {
 	stage('Lint') {
 	    steps {
-		echo 'Invoking hadolint - builder'
+		echo 'Invoking hadolint'
 		sh 'docker run --rm -i hadolint/hadolint < Dockerfile.builder | tee -a hadolint_lint.txt'
-		echo 'Invoking hadolint - runner'
 		sh 'docker run --rm -i hadolint/hadolint < Dockerfile.runner | tee -a hadolint_lint.txt'
 	    }
 	    post {
@@ -21,7 +20,6 @@ pipeline {
 	}
 	stage('Build builder') {
 	    steps {
-		echo 'Building nginx builder...'
 		sh 'docker build -t ${REPO}:${TAG_BUILDER} -f Dockerfile.builder .'
             }
 	}
@@ -30,15 +28,27 @@ pipeline {
 		sh 'docker push ${REPO}:${TAG_BUILDER}'
             }
 	}
+	stage('Build runner') {
+	    steps {
+		sh 'docker run --name nginx_builder ${REPO}:${TAG_BUILDER}'
+		sh 'docker cp nginx_builder:/nginx.tar.gz ./'
+		sh 'docker build -t ${REPO}:${TAG_RUNNER} -f Dockerfile.runner .'
+            }
+	}
+	stage('Push image - runner') {
+	    steps {
+		sh 'docker push ${REPO}:${TAG_RUNNER}'
+            }
+	}
         // stage('Test') {
         //     steps {
-	// 	echo 'Testing...'
-	// 	sh 'ls -la'
+	// 	echo 'Testing with Anchor...'
         //     }
         // }
-        stage('Deploy') {
+        stage('Cleanup') {
             steps {
-		echo 'Deploying to Kind cluster...'
+		sh 'docker rm nginx_builder'
+		sh 'rm nginx.tar.gz'
             }
         }
     }
